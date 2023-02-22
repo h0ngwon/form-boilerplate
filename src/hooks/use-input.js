@@ -1,62 +1,65 @@
-import { useState, useReducer} from 'react';
+import { useState, useReducer } from 'react';
 
 const initialInputState = {
-    value: '',
-    isTouched: false
-}
+	value: '',
+	isTouched: false,
+};
 
 const inputStateReducer = (state, action) => {
-    if(action.type === 'INPUT') {
-        return {
-            value: action.value,
-            isTouched : state.isTouched
-        }
-    }
+	if (action.type === 'INPUT') {
+		return {
+			value: action.value,
+			isTouched: state.isTouched,
+		};
+	}
 
-    if(action.type === 'BLUR') {
-        return {
-            value: state.value,
-            isTouched : true
-        }
-    }
+	if (action.type === 'BLUR') {
+		return {
+			value: state.value,
+			isTouched: true,
+		};
+	}
 
-    if(action.type === 'RESET') {
-        return {
-            value: '',
-            isTouched: false
-        }
-    }
+	if (action.type === 'RESET') {
+		return {
+			value: '',
+			isTouched: false,
+		};
+	}
 
-    return initialInputState;
-}
+	return initialInputState;
+};
 
 const useInput = (validateValue) => {
 	//validateValue is function
 
-    const [inputState, dispatchInput] = useReducer(inputStateReducer, initialInputState)
+	const [inputState, dispatchInput] = useReducer(
+		inputStateReducer,
+		initialInputState
+	);
 
 	const valueIsValid = validateValue(inputState.value);
 	const hasError = !valueIsValid && inputState.isTouched;
 
 	const valueChangeHandler = (event) => {
-        dispatchInput({type : 'INPUT', value: event.target.value})
+		dispatchInput({ type: 'INPUT', value: event.target.value });
 	};
 
 	const inputBlurHandler = (event) => {
-		dispatchInput({type : 'BLUR'})
+		dispatchInput({ type: 'BLUR' });
 	};
 
-    const reset = () => {
-        dispatchInput({type : 'RESET'})
-    }
+	const reset = () => {
+		dispatchInput({ type: 'RESET' });
+	};
 
 	return {
 		value: inputState.value,
-        isValid : valueIsValid,
+		isValid: valueIsValid,
 		hasError,
 		valueChangeHandler,
 		inputBlurHandler,
-        reset,
+		reset,
 	};
 };
 
